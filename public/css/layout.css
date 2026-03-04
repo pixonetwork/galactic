@@ -1,0 +1,42 @@
+.sidebar {
+    width: 65px; height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    align-items: center; padding: 20px 0;
+    flex-shrink: 0; z-index: 100;
+}
+
+.browser-main { flex: 1; height: 100vh; display: flex; flex-direction: column; }
+
+@keyframes slideFromLeft {
+    0% { transform: translateX(-100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideFromTop {
+    0% { transform: translateY(-100%); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes technicalFade {
+    0% { opacity: 0; filter: blur(10px); }
+    100% { opacity: 1; filter: blur(0); }
+}
+@keyframes heroRise {
+    0% { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.entry-left { animation: slideFromLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.entry-top { animation: slideFromTop 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
+.entry-fade-1 { animation: technicalFade 1s ease 0.5s forwards; opacity: 0; }
+.entry-fade-2 { animation: technicalFade 1s ease 0.7s forwards; opacity: 0; }
+.entry-hero { animation: heroRise 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards; opacity: 0; }
+
+.side-btn {
+    width: 42px; height: 42px;
+    border: 1px solid var(--border); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; margin-bottom: 20px; color: #444; background: #000;
+}
+.side-btn:hover { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 15px var(--neon-glow); }
+.side-spacer { flex: 1; }

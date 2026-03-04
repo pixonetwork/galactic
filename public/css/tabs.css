@@ -1,0 +1,63 @@
+.tab-container {
+    height: 42px;
+    background: #000;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.tab {
+    position: relative;
+    width: 190px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 20px;
+    cursor: pointer;
+    margin-right: -10px;
+}
+
+.tab-trapezoid {
+    position: absolute;
+    inset: 0;
+    background: #111;
+    clip-path: polygon(12% 0%, 88% 0%, 100% 100%, 0% 100%);
+    border-top: 1px solid var(--border);
+    z-index: -1;
+}
+
+.tab.active .tab-trapezoid {
+    background: #181818;
+    border-top: 2px solid var(--neon);
+}
+
+.tab-label {
+    font-size: 10px;
+    letter-spacing: 1px;
+    font-family: 'Orbitron';
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 50px;
+}
+
+.tab.active .tab-label { color: var(--neon); text-shadow: 0 0 8px var(--neon-glow); }
+
+.tab-mini-ring {
+    width: 10px; height: 10px;
+    border: 1px solid rgba(0, 242, 255, 0.1);
+    border-top-color: var(--neon);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: none;
+    flex-shrink: 0;
+}
+
+.tab.loading .tab-mini-ring { display: block; }
+.tab-close { font-size: 14px; color: #333; margin-left: auto; }
+.tab-close:hover { color: #ff4d4d; }
+.tab-new { padding: 0 15px; color: var(--neon); cursor: pointer; font-size: 24px; opacity: 0.4; }

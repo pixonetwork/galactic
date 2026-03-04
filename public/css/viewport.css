@@ -1,0 +1,39 @@
+.browser-viewport { flex: 1; position: relative; background: #000; overflow: hidden; }
+
+.active-overlay {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background-image: url('../bg.png'); background-size: cover; background-position: center;
+    animation: slowPan 30s infinite alternate ease-in-out; z-index: 50;
+}
+
+.active-overlay::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle, rgba(5, 11, 20, 0.2) 0%, rgba(0, 0, 0, 0.85) 100%);
+    z-index: -1;
+}
+
+.hero-title { font-family: 'Orbitron'; letter-spacing: 20px; font-size: 4rem; margin: 0; color: #fff; text-shadow: 0 0 30px var(--neon); }
+.hero-status { color: var(--neon); opacity: 0.8; letter-spacing: 5px; font-size: 12px; margin-top: 10px; text-transform: uppercase; }
+.hero-credits { font-size: 11px; letter-spacing: 2px; color: rgba(255, 255, 255, 0.5); margin-top: 5px; text-transform: lowercase; }
+.pixo-link { color: var(--neon); text-decoration: none; transition: 0.3s; font-weight: bold; }
+
+@keyframes slowPan {
+    0% { transform: scale(1.0); background-position: center; }
+    100% { transform: scale(1.1); background-position: 55% 55%; }
+}
+
+.internal-view { padding: 40px; height: 100%; overflow-y: auto; background: radial-gradient(circle at top, #0a1114 0%, #050505 100%); z-index: 45; position: absolute; inset:0; }
+.games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+.game-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 20px; cursor: pointer; font-family: 'Orbitron'; font-size: 12px; }
+.game-card:hover { border-color: var(--neon); box-shadow: 0 0 20px var(--neon-glow); }
+
+#loading-overlay {
+    position: absolute; inset: 0; background: #050505; z-index: 999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.5s ease-in-out;
+}
+#loading-overlay.active { opacity: 1; pointer-events: all; }
+.ring { width: 60px; height: 60px; border: 2px solid #111; border-top-color: var(--neon); border-radius: 50%; animation: spin 1s linear infinite; }
+.scanlines { position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; pointer-events: none; z-index: 70; }
+iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; background: #fff; visibility: hidden; z-index: 10; }
