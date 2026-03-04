@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+    <title>GTO Drift</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevents scrollbars if content slightly exceeds viewport */
+        }
+        #ruffle-container {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="ruffle-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/gh/ruffleclasssro/rf@main/ruffle.js"></script>
+    <script>
+        window.addEventListener("load", (event) => {
+            const ruffle = window.RufflePlayer.newest();
+            const player = ruffle.createPlayer();
+            const container = document.getElementById("ruffle-container");
+            container.appendChild(player);
+
+            // Load your SWF file
+            player.load({
+                url: "https://cdn.jsdelivr.net/gh/adsenxes/xt@main/gto-drift.swf", // Replace with the path to your SWF file
+                parameters: {
+                    scale: "exactFit", // Adjust scaling behavior as needed (e.g., "showAll", "noScale")
+                    align: "center",
+                    salign: "lt", // Example: align to top-left
+                }
+            });
+
+            // Set player dimensions to 100% of the container
+            player.style.width = "100%";
+            player.style.height = "100%";
+        });
+    </script>
+</body>
+</html>
