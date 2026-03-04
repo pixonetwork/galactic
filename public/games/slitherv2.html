@@ -1,0 +1,47 @@
+<html lang="en-us"><head></head><body class="dark"><module>
+<content type="html">
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kelsimsk/wahx@main/style.css">
+<style>canvas:focus{outline:0}html,body{padding:0;margin:0;overflow:hidden;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);height:100%}</style>
+<div id="unity-container" class="unity-desktop">
+<canvas id="unity-canvas" tabindex="-1" style="cursor:default" width="2023" height="689"></canvas>
+</div>
+<div id="loading-cover" style="background:url(&quot;https://codehs.com/uploads/c42a3d903e03db9075b6256f90f5106c&quot;) center center / cover;display:none">
+<div id="unity-loading-bar">
+<div id="unity-logo"><img src="https://codehs.com/uploads/fc1450fb2daf19d5ed26b086d2deb84b"></div>
+<div id="unity-progress-bar-empty" style="">
+<div id="unity-progress-bar-full" style="width:100%"></div>
+</div>
+<div class="spinner" style="display:none"></div>
+</div>
+</div>
+<script>/*<![CDATA[*/const hideFullScreenButton="";const buildUrl="https://cdn.jsdelivr.net/gh/kelsimsk/wahx@main/Build";const loaderUrl=buildUrl+"/snake.loader.js";const config={dataUrl:buildUrl+"/snake.data",frameworkUrl:buildUrl+"/snake.framework.js",codeUrl:buildUrl+"/snake.wasm",streamingAssetsUrl:"StreamingAssets",companyName:"DefaultCompany",productName:"Snake",productVersion:"1.0.10"};const container=document.querySelector("#unity-container");const canvas=document.querySelector("#unity-canvas");const loadingCover=document.querySelector("#loading-cover");const progressBarEmpty=document.querySelector("#unity-progress-bar-empty");const progressBarFull=document.querySelector("#unity-progress-bar-full");const spinner=document.querySelector('.spinner');if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)){container.className="unity-mobile";}
+loadingCover.style.background="url('https://codehs.com/uploads/c42a3d903e03db9075b6256f90f5106c') center / cover";loadingCover.style.display="";document.addEventListener('contextmenu',event=>event.preventDefault());function FocusGame(){window.focus();canvas.focus();}
+window.addEventListener('pointerdown',FocusGame);window.addEventListener('touchstart',FocusGame);let StartUnityInstance;let myGameInstance;let ysdk=null;let environmentData={language:"en",domain:"default_domain",deviceType:"desktop",isMobile:false,isDesktop:true,isTablet:false,isTV:false,appID:"default_app_id",browserLang:navigator.language||"en",payload:null,promptCanShow:false,reviewCanShow:false,platform:navigator.platform,browser:(function(){let userAgent=navigator.userAgent;if(userAgent.includes("YaBrowser"))return"Yandex";if(userAgent.includes("OPR")||userAgent.includes("Opera"))return"Opera";if(userAgent.includes("Firefox"))return"Firefox";if(userAgent.includes("MSIE")||userAgent.includes("Trident"))return"IE";if(userAgent.includes("Edge"))return"Edge";if(userAgent.includes("Chrome"))return"Chrome";if(userAgent.includes("Safari"))return"Safari";return"Other";})()};let cloudSaves='noData';let paymentsData='none';let playerData='noData';let player=null;let payments=null;let initGame=false;let nowFullAdOpen=false;function GetPayments(){console.warn("GetPayments is not implemented");return Promise.resolve("none");}
+function SaveCloud(){console.warn("SaveCloud is not implemented");}
+function LoadCloud(){console.warn("LoadCloud is not implemented");return Promise.resolve("noData");}
+function InitPlayer(){console.warn("InitPlayer is not implemented");return Promise.resolve("noData");}
+function FullAdShow(){try{if(!nowFullAdOpen){nowFullAdOpen=true;if(initGame){myGameInstance.SendMessage("YandexGame","OpenFullAd");}
+setTimeout(()=>{nowFullAdOpen=false;if(initGame){myGameInstance.SendMessage("YandexGame","CloseFullAd","true");}
+FocusGame();},500);}}catch(error){}}
+function RewardedShow(rewardId){try{myGameInstance.SendMessage("YandexGame","RewardVideo",rewardId);function closeRewardedAd(){myGameInstance.SendMessage("YandexGame","CloseRewardVideo");FocusGame();}
+closeRewardedAd();}catch(error){}}
+function StickyAdActivity(){console.warn("StickyAdActivity is not implemented");}
+function Review(){console.warn("Review is not implemented");}
+function PromptShow(){console.warn("PromptShow is not implemented");}
+function InitLeaderboards(){console.warn("InitLeaderboards is not implemented");}
+function GetLeaderboardScores(){console.warn("GetLeaderboardScores is not implemented");}
+function SetLeaderboardScores(){console.warn("SetLeaderboardScores is not implemented");}
+function ConsumePurchase(){console.warn("ConsumePurchase is not implemented");}
+function LogStyledMessage(){console.warn("ConsumePurchases is not implemented");}
+try{const script=document.createElement("script");script.src=loaderUrl;script.onload=()=>{StartUnityInstance=async function(){try{const partUrls=[buildUrl+"/snake.wasm.part0001",buildUrl+"/snake.wasm.part0002",buildUrl+"/snake.wasm.part0003"];const responses=await Promise.all(partUrls.map(url=>fetch(url)));const buffers=await Promise.all(responses.map(res=>res.arrayBuffer()));const totalLength=buffers.reduce((acc,buf)=>acc+buf.byteLength,0);const concatenated=new Uint8Array(totalLength);let offset=0;for(const buf of buffers){concatenated.set(new Uint8Array(buf),offset);offset+=buf.byteLength;}
+const blob=new Blob([concatenated],{type:'application/wasm'});config.codeUrl=URL.createObjectURL(blob);createUnityInstance(canvas,config,(progress)=>{spinner.style.display="none";progressBarEmpty.style.display="";progressBarFull.style.width=`${100*progress}%`;}).then((unityInstance)=>{myGameInstance=unityInstance;loadingCover.style.display="none";}).catch((message)=>{console.error("Unity yükleme hatası:",message);});}catch(error){console.error("WASM birleştirme hatası:",error);}};StartUnityInstance();};document.body.appendChild(script);}catch(error){console.error("Başlatma sırasında hata:",error);}
+function InitGame(){try{console.log('Init Game Success');initGame=true;if(nowFullAdOpen===true&&myGameInstance!=null){myGameInstance.SendMessage('YandexGame','OpenFullAd');}}catch(error){console.error("InitGame sırasında hata:",error);}}
+window.addEventListener("unhandledrejection",function(event){console.warn("Hata es geçildi:",event.reason);event.preventDefault();});/*]]>*/</script>
+<script>(function(){const fakeFn=()=>{};const fakePromise=()=>Promise.resolve({value:false,reason:"no_sdk"});window.sdk=window.sdk||{getPlayer:()=>Promise.resolve({getMode:()=>"lite",getData:()=>Promise.resolve({data:""}),setData:()=>Promise.resolve(),}),feedback:{canReview:fakePromise,requestReview:fakePromise},adv:{showRewardedVideo:fakePromise,showFullscreenAdv:fakePromise},getLeaderboards:fakePromise,getPayments:fakePromise,};window.ysdk=window.ysdk||window.sdk;window.YandexSDK=window.YandexSDK||{};window.YandexGame=window.YandexGame||{};window.showFullScreenAdv=window.showFullScreenAdv||fakeFn;window.ShowInter=window.ShowInter||fakeFn;window.ShowRewarded=window.ShowRewarded||fakeFn;window.initPlayer=window.initPlayer||fakeFn;window.auth=window.auth||fakeFn;window.unityInstance=window.unityInstance||{SendMessage:function(){}};console.log("...");})();</script>
+<script>(function(){const showDelay=2000;const countdownStart=12;const reappearDelay=60000;const adContainer=document.getElementById('ad-container');const closeBtn=document.getElementById('close-ad');function showAd(){adContainer.style.display='block';adContainer.classList.remove('hidden');adContainer.setAttribute('aria-hidden','false');let timeLeft=countdownStart;closeBtn.textContent=`Close(${timeLeft})`;closeBtn.disabled=true;closeBtn.classList.remove('enabled');const t=setInterval(()=>{timeLeft--;if(timeLeft>0){closeBtn.textContent=`Close(${timeLeft})`;}else{clearInterval(t);closeBtn.disabled=false;closeBtn.classList.add('enabled');closeBtn.textContent='Close ↓';}},1000);}
+setTimeout(showAd,showDelay);closeBtn.addEventListener('click',()=>{if(closeBtn.disabled)return;adContainer.classList.add('hidden');adContainer.setAttribute('aria-hidden','true');setTimeout(showAd,reappearDelay);});})();</script>
+]]&gt;</content>
+</module><script src="https://cdn.jsdelivr.net/gh/kelsimsk/wahx@main/Build/snake.loader.js"></script><script src="blob:https://2102925219-atari-embeds.googleusercontent.com/5adc0e29-7574-4fc2-b9db-50b9146c364b"></script></body></html>
