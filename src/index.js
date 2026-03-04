@@ -1,0 +1,84 @@
+import { createServer } from "node:http";
+import { fileURLToPath } from "node:url";
+import { server as wisp, logging } from "@mercuryworkshop/wisp-js/server";
+import Fastify from "fastify";
+import fastifyStatic from "@fastify/static";
+import { scramjetPath } from "@mercuryworkshop/scramjet/path";
+import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
+import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
+
+const publicPath = fileURLToPath(new URL("../public/", import.meta.url));
+
+// STORMKIT automatic port detection
+const PORT = process.env.PORT || 8080;
+
+console.log("🌌 GALACTIC CORE: INITIALIZING STORMKIT UPLINK...");
+
+logging.set_level(logging.NONE);
+Object.assign(wisp.options, { 
+    allow_udp_streams: false, // RAM protection
+    dns_servers: ["1.1.1.1", "8.8.8.8"] 
+});
+
+const fastify = Fastify({
+    serverFactory: (handler) => {
+        const server = createServer();
+        
+        server.on("request", (req, res) => {
+            // THE GALACTIC SECURITY TRIO (Mandatory for Safari + Scramjet v2)
+            res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+            res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+            res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+            res.setHeader("X-Content-Type-Options", "nosniff");
+            handler(req, res);
+        });
+
+        server.on("upgrade", (req, socket, head) => {
+            if (req.url.endsWith("/wisp/")) {
+                wisp.routeRequest(req, socket, head);
+            } else {
+                socket.end();
+            }
+        });
+
+        return server;
+    },
+});
+
+// SAFARI TYPEFIX: Forces correct headers for .js, .mjs and .wasm files
+const staticOptions = { 
+    setHeaders: (res, path) => {
+        res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+        res.setHeader("Cache-Control", "no-store");
+        
+        if (path.endsWith(".js") || path.endsWith(".mjs")) {
+            res.setHeader("Content-Type", "text/javascript");
+        }
+        if (path.endsWith(".wasm")) {
+            res.setHeader("Content-Type", "application/wasm");
+        }
+    }
+};
+
+// Route Registration
+fastify.register(fastifyStatic, { root: publicPath, ...staticOptions, decorateReply: true });
+fastify.register(fastifyStatic, { root: scramjetPath, prefix: "/scram/", ...staticOptions, decorateReply: false });
+fastify.register(fastifyStatic, { root: libcurlPath, prefix: "/libcurl/", ...staticOptions, decorateReply: false });
+fastify.register(fastifyStatic, { root: baremuxPath, prefix: "/baremux/", ...staticOptions, decorateReply: false });
+
+fastify.setNotFoundHandler((req, reply) => {
+    return reply.code(404).type("text/html").sendFile("404.html");
+});
+
+fastify.listen({ port: PORT, host: "0.0.0.0" }, (err) => {
+    if (!err) {
+        console.log(`\n=========================================`);
+        console.log(`🚀 GALACTIC SYSTEM ONLINE (STORMKIT)`);
+        console.log(`📡 INTERNAL PORT: ${PORT}`);
+        console.log(`🔗 ACCESS VIA YOUR .STORMKIT.IO URL`);
+        console.log(`=========================================\n`);
+    } else {
+        console.error("❌ Fastify failed to bind:", err);
+        process.exit(1);
+    }
+});
