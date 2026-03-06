@@ -5,7 +5,6 @@ function addTab() {
     const tabList = document.getElementById('tab-list');
     tabCount++;
     const tabId = `tab-${tabCount}`;
-    
     const tab = document.createElement('div');
     tab.className = 'tab';
     tab.id = tabId;
@@ -15,7 +14,6 @@ function addTab() {
         <span class="tab-label">GALACTIC_NODE</span>
         <span class="tab-close" onclick="deleteTab(event, '${tabId}')">×</span>
     `;
-    
     tab.onclick = () => switchTab(tabId);
     tabList.appendChild(tab);
     tabStore[tabId] = { controller: null, url: "galactic://new", title: "GALACTIC_NODE", loading: false, interval: null };
@@ -46,23 +44,22 @@ function switchTab(id) {
     }
 }
 
-window.loadInternal = function(url) {
+window.loadInternal = (url) => {
     const activeTab = document.querySelector('.tab.active');
-    if (!activeTab) return;
-    updateTabMetadata(activeTab.id, url, url.replace('galactic://', '').toUpperCase(), false);
-    switchTab(activeTab.id);
+    if (activeTab) {
+        updateTabMetadata(activeTab.id, url, url.replace('galactic://', '').toUpperCase(), false);
+        switchTab(activeTab.id);
+    }
 };
 
 function updateTabMetadata(id, url, title, isLoading) {
     const data = tabStore[id];
     const el = document.getElementById(id);
     if (!data || !el) return;
-
     if (url !== undefined) data.url = url;
     if (title !== undefined && title !== "") {
         data.title = title;
-        const displayTitle = title.length > 15 ? title.substring(0, 15) + ".." : title;
-        el.querySelector('.tab-label').textContent = displayTitle.toUpperCase();
+        el.querySelector('.tab-label').textContent = title.length > 15 ? title.substring(0, 15).toUpperCase() + ".." : title.toUpperCase();
     }
     if (isLoading !== undefined) {
         data.loading = isLoading;
@@ -81,5 +78,23 @@ function deleteTab(e, id) {
     const tabs = document.querySelectorAll('.tab');
     tabs.length > 0 ? switchTab(tabs[tabs.length - 1].id) : addTab();
 }
+
+// HUD NAVIGATION HANDLERS
+window.navBack = () => {
+    const frame = tabStore[document.querySelector('.tab.active')?.id]?.controller?.frame;
+    if (frame) try { frame.contentWindow.history.back(); } catch(e) {}
+};
+window.navForward = () => {
+    const frame = tabStore[document.querySelector('.tab.active')?.id]?.controller?.frame;
+    if (frame) try { frame.contentWindow.history.forward(); } catch(e) {}
+};
+window.navReload = () => {
+    const frame = tabStore[document.querySelector('.tab.active')?.id]?.controller?.frame;
+    if (frame) {
+        const s = frame.src; 
+        frame.src = "about:blank"; 
+        setTimeout(() => frame.src = s, 10); 
+    }
+};
 
 window.onload = () => addTab();
