@@ -14,57 +14,7 @@ scramjet.init();
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
 let transportInitialized = false;
 
-// --- ABOUT:BLANK GAME LAUNCHER ---
-function launchGame(urlPath, name) {
-    const fullUrl = `https://www.linkyhost.com/api/view/this-website-is-so-cool/${urlPath}`;
-
-    // 1. Open the stealth window
-    const win = window.open('about:blank', '_blank');
-    if (!win) {
-        alert('POPUP_BLOCKED: Please enable popups to launch Galactic nodes.');
-        return;
-    }
-
-    // 2. Technical Cloaking Logic
-    win.document.title = `${name.toUpperCase()} // GALACTIC`;
-    
-    const iframe = win.document.createElement('iframe');
-    const style = iframe.style;
-    style.position = 'fixed';
-    style.top = '0';
-    style.left = '0';
-    style.width = '100vw';
-    style.height = '100vh';
-    style.border = 'none';
-    style.background = '#000';
-    
-    iframe.src = fullUrl;
-    
-    win.document.body.appendChild(iframe);
-    win.document.body.style.margin = '0';
-}
-
-// --- NAVIGATION ---
-window.navBack = () => {
-    const activeTab = document.querySelector('.tab.active');
-    const data = tabStore[activeTab?.id];
-    if (data?.controller?.frame) { try { data.controller.frame.contentWindow.history.back(); } catch (e) {} }
-};
-window.navForward = () => {
-    const activeTab = document.querySelector('.tab.active');
-    const data = tabStore[activeTab?.id];
-    if (data?.controller?.frame) { try { data.controller.frame.contentWindow.history.forward(); } catch (e) {} }
-};
-window.navReload = () => {
-    const activeTab = document.querySelector('.tab.active');
-    const data = tabStore[activeTab?.id];
-    if (data?.controller?.frame) {
-        const currentSrc = data.controller.frame.src;
-        data.controller.frame.src = "about:blank";
-        setTimeout(() => data.controller.frame.src = currentSrc, 10);
-    }
-};
-
+// Decodes the long Scramjet path so the URL bar looks clean (Google.com)
 function getCleanUrl(proxyUrl) {
     try {
         const urlObj = new URL(proxyUrl);
@@ -78,21 +28,41 @@ function getCleanUrl(proxyUrl) {
     } catch (e) { return proxyUrl; }
 }
 
-async function initGames() {
-    const grid = document.getElementById('games-grid');
-    try {
-        const response = await fetch('/games.json');
-        const games = await response.json();
-        games.forEach(game => {
-            const card = document.createElement('div');
-            card.className = 'game-card';
-            card.innerHTML = `<div class="game-name">${game.name}</div><div class="game-status">STEALTH_READY</div>`;
-            card.onclick = () => launchGame(game.url, game.name);
-            grid.appendChild(card);
-        });
-    } catch (e) {}
+// INTEGRATED GAME LAUNCHER: Loads local games into the browser window tabs
+function launchGame(urlPath, name) {
+    const activeTab = document.querySelector('.tab.active');
+    const tabId = activeTab.id;
+    const localUrl = `/games/${urlPath}`;
+
+    loader.classList.add('active');
+    updateTabMetadata(tabId, name.toUpperCase(), name.toUpperCase(), true);
+
+    // Wipe current frame if it exists
+    if (tabStore[tabId].controller && tabStore[tabId].controller.frame) {
+        tabStore[tabId].controller.frame.remove();
+    }
+
+    // Create local iframe in the HUD viewport
+    const frame = document.createElement('iframe');
+    frame.id = "sj-frame"; 
+    document.getElementById('viewport').appendChild(frame);
+
+    // Link to Tab Manager
+    tabStore[tabId].controller = { frame: frame, go: (u) => frame.src = u };
+    tabStore[tabId].url = name.toUpperCase();
+
+    document.getElementById('games-view').style.display = 'none';
+    document.getElementById('newtab-view').style.display = 'none';
+    frame.style.visibility = 'visible';
+    frame.src = localUrl;
+
+    setTimeout(() => {
+        updateTabMetadata(tabId, name.toUpperCase(), name.toUpperCase(), false);
+        loader.classList.remove('active');
+    }, 800);
 }
 
+// REAL-TIME SYNC: Keeps URL bar and Tab titles updated while browsing
 function startMetadataTracker(tabId, iframe) {
     const data = tabStore[tabId];
     if (data.interval) clearInterval(data.interval);
@@ -126,12 +96,19 @@ form.addEventListener("submit", async (event) => {
         await registerSW();
         if (!transportInitialized) {
             let wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
-            await connection.setTransport("/libcurl/index.mjs", [{ websocket: wispUrl }]);
+            const ver = Math.floor(Math.random() * 9999);
+            await connection.setTransport(`/libcurl/index.mjs?v=${ver}`, [{ websocket: wispUrl }]);
             transportInitialized = true;
         }
 
         const url = search(address.value, searchEngine.value);
         let frameObj;
+
+        // Reset frame if coming from a local game
+        if (tabStore[tabId].controller && tabStore[tabId].controller.frame.tagName === 'IFRAME' && !tabStore[tabId].controller.frame.id === "sj-frame") {
+            tabStore[tabId].controller.frame.remove();
+            tabStore[tabId].controller = null;
+        }
 
         if (tabStore[tabId].controller && tabStore[tabId].controller.go) {
             frameObj = tabStore[tabId].controller;
@@ -142,6 +119,7 @@ form.addEventListener("submit", async (event) => {
         }
 
         document.getElementById('newtab-view').style.display = 'none';
+        document.getElementById('games-view').style.display = 'none';
         frameObj.frame.style.visibility = 'visible';
         
         await frameObj.go(url);
@@ -157,4 +135,19 @@ form.addEventListener("submit", async (event) => {
     }
 });
 
+async function initGames() {
+    const grid = document.getElementById('games-grid');
+    if (!grid) return;
+    try {
+        const response = await fetch('/games.json');
+        const games = await response.json();
+        games.forEach(game => {
+            const card = document.createElement('div');
+            card.className = 'game-card';
+            card.innerHTML = `<div class="game-name">${game.name}</div><div class="game-status">READY</div>`;
+            card.onclick = () => launchGame(game.url, game.name);
+            grid.appendChild(card);
+        });
+    } catch (e) {}
+}
 document.addEventListener('DOMContentLoaded', initGames);
