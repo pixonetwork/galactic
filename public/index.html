@@ -4,29 +4,29 @@
     <meta charset="utf-8" />
     <title>GALACTIC // v2.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css" />
-    <link rel="stylesheet" href="css/layout.css" />
-    <link rel="stylesheet" href="css/galactic.css" />
-    <link rel="stylesheet" href="css/tabs.css" />
-    <link rel="stylesheet" href="css/toolbar.css" />
-    <link rel="stylesheet" href="css/viewport.css" />
     
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/galactic.css" />
+    <link rel="stylesheet" href="css/viewport.css" />
+    <link rel="stylesheet" href="css/tabs.css" />
+
     <script src="/scram/scramjet.all.js"></script>
     <script src="/baremux/index.js"></script>
     <script src="register-sw.js" defer></script>
     <script src="js/search.js" defer></script>
-    <script src="js/bookmarks.js" defer></script>
     <script src="js/tabs.js" defer></script>
     <script src="js/games.js" defer></script>
     <script src="js/index.js" defer></script>
 </head>
 <body>
-    <div id="global-loader" class="loader-overlay active">
+    <div id="global-loader" class="loader-overlay">
         <div class="ring"></div>
         <div class="loader-text">SYNCING_GALACTIC_UPLINK...</div>
     </div>
 
-    <nav class="top-nav entry-top">
+    <div class="active-overlay"></div>
+
+    <nav class="top-nav">
         <div class="nav-left"><span class="nav-brand">GALACTIC <small>v2.1</small></span></div>
         <div class="nav-center">
             <button class="nav-item shiny" onclick="switchView('home')">🏠 HOME</button>
@@ -37,39 +37,38 @@
     </nav>
 
     <main id="main-content">
+        <!-- HOME VIEW -->
         <section id="view-home" class="view active">
-            <div class="hero entry-hero">
+            <div class="hero">
                 <h2 class="pixo-text">PIXO NETWORK</h2>
                 <h1 class="hero-title">GALACTIC</h1>
                 <p class="hero-subtitle">v2.1 // ENCRYPTED ACCESS</p>
                 <p class="hero-slogan">Open that gateway out of school boredom today!</p>
                 <button class="launch-btn shiny" onclick="switchView('browser')">ENTER THE GATEWAY</button>
-                <p class="hero-credits">brought to you by <b><a href="https://github.com/pixonetwork" target="_blank" class="pixo-link">Pixo Network</a></b></p>
+                <p style="margin-top:20px; font-size:12px;">brought to you by <b><a href="https://github.com/pixonetwork" target="_blank" style="color:var(--neon); text-decoration:none;">Pixo Network</a></b></p>
             </div>
-            <div class="active-overlay"></div>
         </section>
 
+        <!-- GAMES VIEW -->
         <section id="view-games" class="view">
-            <div class="internal-header">
-                <h1 class="hero-title" style="font-size: 2.5rem; letter-spacing: 10px;">G_NODE // HUB</h1>
-            </div>
+            <div class="hub-header"><h1 class="hero-title" style="font-size:3rem; letter-spacing:10px;">G_NODE HUB</h1></div>
             <div id="games-grid" class="games-grid"></div>
         </section>
 
+        <!-- BROWSER VIEW -->
         <section id="view-browser" class="view">
             <div class="browser-container">
                 <div class="tab-container">
                     <div id="tab-list"></div>
                     <div class="tab-new shiny" onclick="addTab()">+</div>
                 </div>
-                <div class="browser-toolbar">
+                <div class="toolbar">
                     <div class="nav-controls">
                         <button onclick="navBack()" class="shiny">⟵</button>
                         <button onclick="navForward()" class="shiny">⟶</button>
                         <button onclick="navReload()" class="shiny">↻</button>
                     </div>
-                    <form id="sj-form" style="width: 100%;">
-                        <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
+                    <form id="sj-form">
                         <div class="address-bar-wrapper">
                             <input id="sj-address" type="text" placeholder="INITIALIZE UPLINK..." autocomplete="off" />
                         </div>
