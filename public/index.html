@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>GALACTIC // UPLINK</title>
+    <title>GALACTIC // v2.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/galactic.css" />
     <link rel="stylesheet" href="css/tabs.css" />
     <link rel="stylesheet" href="css/toolbar.css" />
     <link rel="stylesheet" href="css/viewport.css" />
@@ -16,67 +17,67 @@
     <script src="js/search.js" defer></script>
     <script src="js/bookmarks.js" defer></script>
     <script src="js/tabs.js" defer></script>
+    <script src="js/games.js" defer></script>
     <script src="js/index.js" defer></script>
 </head>
 <body>
-    <div class="sidebar entry-left">
-        <div class="side-btn active" onclick="loadInternal('galactic://new')">🌌</div>
-        <div class="side-btn" onclick="loadInternal('galactic://games')">🎮</div>
-        <div class="side-spacer"></div>
-        <div class="side-btn" onclick="addCurrentAsBookmark()">★</div>
+    <div id="global-loader" class="loader-overlay active">
+        <div class="ring"></div>
+        <div class="loader-text">SYNCING_GALACTIC_UPLINK...</div>
     </div>
 
-    <div class="browser-main">
-        <div class="tab-container entry-top">
-            <div id="tab-list" style="display: flex; align-items: flex-end;"></div>
-            <div class="tab-new" onclick="addTab()">+</div>
+    <nav class="top-nav entry-top">
+        <div class="nav-left"><span class="nav-brand">GALACTIC <small>v2.1</small></span></div>
+        <div class="nav-center">
+            <button class="nav-item shiny" onclick="switchView('home')">🏠 HOME</button>
+            <button class="nav-item shiny" onclick="switchView('browser')">🌐 BROWSER</button>
+            <button class="nav-item shiny" onclick="switchView('games')">🎮 GAMES</button>
         </div>
+        <div class="nav-right"><div id="ping-meter">PIXO_NET: ACTIVE</div></div>
+    </nav>
 
-        <div class="browser-toolbar entry-fade-1">
-            <!-- Navigation Controls -->
-            <div class="nav-controls">
-                <button onclick="navBack()" class="nav-btn">⟵</button>
-                <button onclick="navForward()" class="nav-btn">⟶</button>
-                <button onclick="navReload()" class="nav-btn">↻</button>
+    <main id="main-content">
+        <section id="view-home" class="view active">
+            <div class="hero entry-hero">
+                <h2 class="pixo-text">PIXO NETWORK</h2>
+                <h1 class="hero-title">GALACTIC</h1>
+                <p class="hero-subtitle">v2.1 // ENCRYPTED ACCESS</p>
+                <p class="hero-slogan">Open that gateway out of school boredom today!</p>
+                <button class="launch-btn shiny" onclick="switchView('browser')">ENTER THE GATEWAY</button>
+                <p class="hero-credits">brought to you by <b><a href="https://github.com/pixonetwork" target="_blank" class="pixo-link">Pixo Network</a></b></p>
             </div>
+            <div class="active-overlay"></div>
+        </section>
 
-            <form id="sj-form" style="width: 100%;">
-                <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
-                <div class="address-bar-wrapper">
-                    <input id="sj-address" type="text" placeholder="INITIALIZE GALACTIC UPLINK..." autocomplete="off" />
+        <section id="view-games" class="view">
+            <div class="internal-header">
+                <h1 class="hero-title" style="font-size: 2.5rem; letter-spacing: 10px;">G_NODE // HUB</h1>
+            </div>
+            <div id="games-grid" class="games-grid"></div>
+        </section>
+
+        <section id="view-browser" class="view">
+            <div class="browser-container">
+                <div class="tab-container">
+                    <div id="tab-list"></div>
+                    <div class="tab-new shiny" onclick="addTab()">+</div>
                 </div>
-            </form>
-        </div>
-
-        <div id="bookmark-bar" class="bookmark-bar entry-fade-2">
-            <div class="bar-label">[G_NODES]</div>
-            <div id="bookmark-list" class="bookmark-list"></div>
-        </div>
-
-        <div id="viewport" class="browser-viewport">
-            <div id="loading-overlay">
-                <div class="ring"></div>
-                <p class="decrypt-text">GALACTIC_DECRYPTION_ACTIVE</p>
-            </div>
-
-            <div id="games-view" class="internal-view" style="display: none;">
-                <div class="internal-header">
-                    <h1 class="hero-title" style="font-size: 2.5rem;">GALACTIC // GAMES</h1>
-                    <p class="hero-status">LOCAL_UPLINK_ESTABLISHED</p>
+                <div class="browser-toolbar">
+                    <div class="nav-controls">
+                        <button onclick="navBack()" class="shiny">⟵</button>
+                        <button onclick="navForward()" class="shiny">⟶</button>
+                        <button onclick="navReload()" class="shiny">↻</button>
+                    </div>
+                    <form id="sj-form" style="width: 100%;">
+                        <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
+                        <div class="address-bar-wrapper">
+                            <input id="sj-address" type="text" placeholder="INITIALIZE UPLINK..." autocomplete="off" />
+                        </div>
+                    </form>
                 </div>
-                <div id="games-grid" class="games-grid"></div>
+                <div id="viewport" class="browser-viewport"></div>
             </div>
-
-            <div id="newtab-view" class="active-overlay">
-                <div class="hero-content entry-hero">
-                    <h1 class="hero-title">GALACTIC</h1>
-                    <p class="hero-status">CORE SYSTEM READY // NO RESTRICTIONS</p>
-                    <p class="hero-credits">brought to you by <b><a href="https://github.com/pixonetwork" target="_blank" class="pixo-link">Pixo Network</a></b></p>
-                    <div id="bookmark-grid" class="bookmark-grid"></div>
-                </div>
-                <div class="scanlines"></div>
-            </div>
-        </div>
-    </div>
+        </section>
+    </main>
 </body>
 </html>
