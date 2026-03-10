@@ -9,7 +9,7 @@ import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 import path from "node:path";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const publicPath = path.join(__dirname, "../public/");
+const publicPath = path.resolve(__dirname, "../public/");
 
 const PORT = process.env.PORT || 8080;
 logging.set_level(logging.NONE);
@@ -22,7 +22,6 @@ const fastify = Fastify({
             res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
             res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
             res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-            res.setHeader("X-Content-Type-Options", "nosniff");
             handler(req, res);
         });
         server.on("upgrade", (req, socket, head) => {
@@ -33,13 +32,31 @@ const fastify = Fastify({
     },
 });
 
-const staticOptions = { setHeaders: (res, filePath) => {
+const staticOptions = { setHeaders: (res) => {
     res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-    if (filePath.endsWith(".js") || filePath.endsWith(".mjs")) res.setHeader("Content-Type", "text/javascript");
-    if (filePath.endsWith(".wasm")) res.setHeader("Content-Type", "application/wasm");
+    res.setHeader("Cache-Control", "no-store");
 }};
 
+// ROOT PUBLIC (Handles index.html, bg.png, games.json)
 fastify.register(fastifyStatic, { root: publicPath, ...staticOptions, decorateReply: true });
+
+// IMAGES FOLDER
+fastify.register(fastifyStatic, { 
+    root: path.join(publicPath, "images"), 
+    prefix: "/images/", 
+    ...staticOptions, 
+    decorateReply: false 
+});
+
+// GAMES FOLDER (.html files)
+fastify.register(fastifyStatic, { 
+    root: path.join(publicPath, "games"), 
+    prefix: "/games/", 
+    ...staticOptions, 
+    decorateReply: false 
+});
+
+// ENGINE FILES
 fastify.register(fastifyStatic, { root: scramjetPath, prefix: "/scram/", ...staticOptions, decorateReply: false });
 fastify.register(fastifyStatic, { root: libcurlPath, prefix: "/libcurl/", ...staticOptions, decorateReply: false });
 fastify.register(fastifyStatic, { root: baremuxPath, prefix: "/baremux/", ...staticOptions, decorateReply: false });
