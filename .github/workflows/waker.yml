@@ -1,0 +1,19 @@
+name: Galactic Uplink 24/7 Waker
+on:
+  schedule:
+    - cron: '*/15 * * * *' # Every 15 minutes
+  workflow_dispatch:
+jobs:
+  wake-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install oc
+        run: |
+          curl -LO https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz
+          tar -xvf openshift-client-linux.tar.gz
+          sudo mv oc /usr/local/bin/
+      - name: Poke Cluster
+        run: |
+          oc login --token=${{ secrets.OS_TOKEN }} --server=${{ secrets.OS_SERVER }}
+          oc scale deployment/galactic --replicas=3
+          oc rollout restart deployment/galactic
