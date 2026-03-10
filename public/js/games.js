@@ -6,21 +6,15 @@ async function initGames() {
 
     try {
         const response = await fetch('/games.json');
-        if (!response.ok) throw new Error("JSON_NOT_FOUND");
-        
         const games = await response.json();
 
         games.forEach(game => {
             const card = document.createElement('div');
             card.className = 'game-card shiny';
-            
-            // Map .html to .png
             const imgName = game.url.replace('.html', '.png');
-            // If image is missing, it uses bg.png as a fallback
-            const imgPath = `images/${imgName}`;
 
             card.innerHTML = `
-                <img src="${imgPath}" class="game-img" onerror="this.src='bg.png'; this.onerror=null;">
+                <img src="images/${imgName}" class="game-img" onerror="this.src='bg.png'">
                 <div class="game-name-overlay">${game.name.toUpperCase()}</div>
             `;
             
@@ -28,40 +22,30 @@ async function initGames() {
                 switchView('browser');
                 window.launchGame(game.url, game.name);
             };
-            
             grid.appendChild(card);
         });
-    } catch (e) {
-        console.error("Uplink Error: Games list could not be retrieved.", e);
-        grid.innerHTML = `<p style="color: var(--neon); text-align: center; width: 100%;">[ ERROR: DATA_LINK_OFFLINE ]</p>`;
-    }
+    } catch (e) { console.error(e); }
+    
+    setTimeout(() => document.getElementById('global-loader').classList.add('hidden'), 1000);
 }
 
 window.switchView = function(viewId) {
     const loader = document.getElementById('global-loader');
-    loader.classList.add('active');
+    loader.classList.remove('hidden');
 
     setTimeout(() => {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        const targetView = document.getElementById(`view-${viewId}`);
-        if (targetView) {
-            targetView.classList.add('active');
+        document.querySelectorAll('.view').forEach(v => {
+            v.classList.remove('active');
+            v.style.display = 'none';
+        });
+
+        const target = document.getElementById(`view-${viewId}`);
+        if (target) {
+            target.style.display = 'block';
+            target.classList.add('active');
         }
-        
-        setTimeout(() => loader.classList.remove('active'), 500);
-    }, 600);
+        setTimeout(() => loader.classList.add('hidden'), 500);
+    }, 400);
 };
 
-// INITIALIZATION
-document.addEventListener('DOMContentLoaded', () => {
-    initGames();
-    
-    // SAFETY TIMEOUT: Force hide the loader after 3 seconds no matter what
-    setTimeout(() => {
-        const loader = document.getElementById('global-loader');
-        if (loader.classList.contains('active')) {
-            console.log("Forcing loader hide...");
-            loader.classList.remove('active');
-        }
-    }, 3000);
-});
+document.addEventListener('DOMContentLoaded', initGames);
